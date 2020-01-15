@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "webrtc/modules/audio_processing/aec/include/echo_cancellation.h"
 #include "webrtc/common_audio/signal_processing/include/signal_processing_library.h"
 
@@ -10,8 +11,8 @@ int WebRtcAecTest()
 {
     short far_frame[NN], near_frame[NN], out_frame[NN];
     void *aecmInst = NULL;
-    FILE *fp_far  = fopen("../media/speaker.pcm", "rb");
-    FILE *fp_near = fopen("../media/micin.pcm", "rb");
+    FILE *fp_far  = fopen("speaker.pcm", "rb");
+    FILE *fp_near = fopen("micin.pcm", "rb");
     FILE *fp_out  = fopen("out.pcm", "wb");
     AecConfig config;
 
@@ -32,6 +33,7 @@ int WebRtcAecTest()
     for(;;) {
         if (NN == fread(far_frame, sizeof(short), NN, fp_far)) {
             fread(near_frame, sizeof(short), NN, fp_near);
+            usleep(20000);
             WebRtcAec_BufferFarend(aecmInst, far_frame, NN);//对参考声音(回声)的处理
             WebRtcAec_Process(aecmInst, near_frame, NULL, out_frame, NULL, NN, 40, 0);//回声消除
             fwrite(out_frame, sizeof(short), NN, fp_out);
