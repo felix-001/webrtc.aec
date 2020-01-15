@@ -49,7 +49,9 @@ int WebRtcAecTest()
 
 int main()
 {
-	WebRtcAecTest();
+    for(;;) {
+        WebRtcAecTest();
+    }
 	return 0;
 }
 
